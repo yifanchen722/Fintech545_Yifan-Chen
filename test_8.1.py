@@ -12,3 +12,8 @@ mean_diff = abs(mean - VaR)
 
 print("VaR:\n", abs(VaR))
 print("Mean - VaR:\n", mean_diff)
+
+output_path = "/Users/nico/Desktop/output_8.1.csv"
+pd.DataFrame({"VaR": [abs(VaR)], "Diff from Mean": [mean_diff]}).to_csv(
+    output_path, index=False, header=True
+)
