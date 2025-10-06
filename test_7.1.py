@@ -11,4 +11,4 @@ print("mu:", mu)
 print("sigma:", sigma)
 
 out_df = pd.DataFrame({"mu": [mu], "sigma": [sigma]})
-out_df.to_csv("../output/output7.1.csv", index=False)
+out_df.to_csv("../output/output7_1.csv", index=False)
