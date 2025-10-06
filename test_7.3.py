@@ -4,7 +4,7 @@ from scipy.optimize import minimize
 from scipy.special import gammaln
 
 
-data = pd.read_csv("test7_3.csv")
+data = pd.read_csv("../data/test7_3.csv")
 X = data[["x1", "x2", "x3"]].values
 y = data["y"].values
 n = len(y)
@@ -42,3 +42,16 @@ print("mu\tsigma\tnu\tAlpha\tB1\tB2\tB3")
 print(
     f"{mu_hat}\t{sigma_hat}\t{nu_hat}\t{alpha_hat}\t{B_hat[0]}\t{B_hat[1]}\t{B_hat[2]}"
 )
+
+out_df = pd.DataFrame(
+    {
+        "mu_hat": [mu_hat],
+        "sigma_hat": [sigma_hat],
+        "nu_hat": [nu_hat],
+        "alpha_hat": [alpha_hat],
+        "B_hat[0]": [B_hat[0]],
+        "B_hat[1]": [B_hat[1]],
+        "B_hat[2]": [B_hat[2]],
+    }
+)
+out_df.to_csv("../output/output7_3.csv", index=False)
