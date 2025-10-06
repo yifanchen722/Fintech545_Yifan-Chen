@@ -2,12 +2,12 @@ import numpy as np
 import test_lib
 import pandas as pd
 
-C = np.loadtxt("/Users/nico/Desktop/input/test5_3.csv", delimiter=",", skiprows=1)
+C = np.loadtxt("/Users/nico/Desktop/test5_3.csv", delimiter=",", skiprows=1)
 var = np.diag(np.diag(C))
 C = np.linalg.inv(np.sqrt(var)) @ C @ np.linalg.inv(np.sqrt(var))
 
 maxiter = 100000
-tol = 1e-7
+tol = 1e-10
 
 deltaS = np.zeros((C.shape[0], C.shape[1]))
 Y = C
