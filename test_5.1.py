@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-file_path = "/Users/nico/Desktop/input/test5_1.csv"
+file_path = "../data/test5_1.csv"
 Sigma = pd.read_csv(file_path)
 
 K = 100000
@@ -13,5 +13,5 @@ sample_cov = np.cov(X, rowvar=False)
 
 np.set_printoptions(precision=15, suppress=True)
 
-output_path = "/Users/nico/Desktop/output_5.1.csv"
+output_path = "../output/output_5.1.csv"
 pd.DataFrame(sample_cov).to_csv(output_path, index=False, header=False)
