@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from scipy.stats import t
 
-df = np.loadtxt("/Users/nico/Desktop/input/test7_2.csv", delimiter=",", skiprows=1)
+df = np.loadtxt("../data/test7_2.csv", delimiter=",", skiprows=1)
 
 nu, mu, sigma = t.fit(df)
 
