@@ -114,3 +114,55 @@ def get_ew_cov(data_path, lam, has_date, is_rate):
                 dt2.iloc[:, j] - mean_vec[j]
             )
     return cov
+
+
+def get_ew_corr(data_path, lam, has_date, is_rate):
+    dt1 = pd.read_csv(data_path)
+
+    if is_rate & has_date:
+        # 如果已经是收益率数据，则不需要计算收益率，直接使用dt1
+        # there is a date column, use iloc[:,1:] instead of iloc[:, :] to exclude the date column
+        dt2 = dt1.copy().iloc[:, 1:]
+        dt2.index = range(dt2.shape[0])
+    elif is_rate & (not has_date):
+        # 如果已经是收益率数据，则不需要计算收益率，直接使用dt1
+        # there is no date column, use iloc[:, :] to include the date column
+        dt2 = dt1.copy().iloc[:, :]
+        dt2.index = range(dt2.shape[0])
+    elif (not is_rate) & has_date:
+        # 需要计算收益率
+        # there is a date column, use iloc[1:,1:] instead of iloc[1, :] to exclude the date column
+        dt2 = dt1.copy().iloc[1:, 1:]
+        dt2.index = range(dt2.shape[0])
+        dt2 = (dt2 - dt1.iloc[:-1, 1:]) / dt1.iloc[:-1, 1:]
+    else:
+        # 需要计算收益率
+        # there is no date column, use iloc[1:, :] to include the date column
+        dt2 = dt1.copy().iloc[1:, :]
+        dt2.index = range(dt2.shape[0])
+        dt2 = (dt2 - dt1.iloc[:-1, :]) / dt1.iloc[:-1, :]
+
+    # weight vector
+    wts = (1 - lam) * lam ** np.arange(dt2.shape[0] - 1, -1, -1)
+    # normalize weights
+    wts = wts / sum(wts)
+
+    # covariance matrix
+    mean_vec = []
+    for col in range(0, dt2.shape[1]):
+        mean_vec.append(sum(dt2.iloc[:, col] * wts))
+
+    # placeholder for covariance matrix
+    cov = np.zeros((dt2.shape[1], dt2.shape[1]))
+    for i in range(0, dt2.shape[1]):
+        for j in range(0, dt2.shape[1]):
+            cov[i, j] = ((dt2.iloc[:, i] - mean_vec[i]) * wts).T @ (
+                dt2.iloc[:, j] - mean_vec[j]
+            )
+
+    # correlation matrix
+    corr = np.zeros((dt2.shape[1], dt2.shape[1]))
+    for i in range(0, dt2.shape[1]):
+        for j in range(0, dt2.shape[1]):
+            corr[i, j] = cov[i, j] / np.sqrt(cov[i, i] * cov[j, j])
+    return corr
