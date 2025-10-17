@@ -166,3 +166,30 @@ def get_ew_corr(data_path, lam, has_date, is_rate):
         for j in range(0, dt2.shape[1]):
             corr[i, j] = cov[i, j] / np.sqrt(cov[i, i] * cov[j, j])
     return corr
+
+
+def higham(data_path, maxiter, tol):
+    C = np.loadtxt(data_path, delimiter=",", skiprows=1)
+    var = np.diag(np.diag(C))
+    C = np.linalg.inv(np.sqrt(var)) @ C @ np.linalg.inv(np.sqrt(var))
+
+    deltaS = np.zeros((C.shape[0], C.shape[1]))
+    Y = C
+    gamma_1 = np.finfo(np.float64).max
+    gamma_2 = np.finfo(np.float64).max
+    R = np.zeros((C.shape[0], C.shape[1]))
+    X = np.zeros((C.shape[0], C.shape[1]))
+
+    for k in range(1, maxiter + 1):
+        gamma_1 = gamma_2
+        R = Y - deltaS
+        X = PSA(R)
+        deltaS = X - R
+        Y = PUA(X)
+        gamma_2 = Frobeniusnorm(Y - C)
+        print("iter:", k, "gamma_2:", gamma_2)
+        if abs(gamma_1 - gamma_2) <= tol:
+            break
+
+    Y = np.sqrt(var) @ Y @ np.sqrt(var)
+    return Y
