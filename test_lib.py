@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.stats import norm
+from scipy.stats import t
 
 
 def get_near_psd(dt, eps):
@@ -193,3 +194,60 @@ def higham(data_path, maxiter, tol):
 
     Y = np.sqrt(var) @ Y @ np.sqrt(var)
     return Y
+
+
+def tell_psd(data_path):
+    df = pd.read_csv(data_path, sep=",")
+    data = df.values.astype(float)
+    print(data)
+
+    C_hat = get_near_psd(data, eps=1e-8)
+    print(C_hat)
+    if np.allclose(data, C_hat, rtol=1e-6, atol=1e-9):
+        return True
+    else:
+        return False
+
+
+def summ_stats(data):
+    print("Mean:", data.mean())
+    print("Variance:", data.var())
+    print("Skewness:", data.skew())
+    print("Kurtosis:", data.kurt())
+
+
+def fit_t_distribution(x):
+
+    nu, mu, sigma = t.fit(x)
+
+    print("mu\tsigma\tnu")
+    print(f"{mu}\t{sigma}\t{nu}")
+
+    mean_t = mu if nu > 1 else np.nan
+    var_t = sigma**2 * nu / (nu - 2) if nu > 2 else np.nan
+    skew_t = 0 if nu > 3 else np.nan
+    kurt_t = 6 / (nu - 4) if nu > 4 else np.nan  # excess kurtosis
+
+    print("\nTheoretical moments:")
+    print(f"Mean: {mean_t}")
+    print(f"Variance: {var_t}")
+    print(f"Skewness: {skew_t}")
+    print(f"Kurtosis: {kurt_t}")
+
+
+def fit_normal_distribution(x):
+    mu, sigma = norm.fit(x)
+
+    print("mu\tsigma")
+    print(f"{mu}\t{sigma}")
+
+    mean_n = mu
+    var_n = sigma**2
+    skew_n = 0
+    kurt_n = 0  # excess kurtosis
+
+    print("\nTheoretical moments:")
+    print(f"Mean: {mean_n}")
+    print(f"Variance: {var_n}")
+    print(f"Skewness: {skew_n}")
+    print(f"Kurtosis: {kurt_n}")
