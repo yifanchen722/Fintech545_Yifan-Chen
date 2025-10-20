@@ -211,7 +211,8 @@ def tell_psd(data_path):
 
 def summ_stats(data):
     print("Mean:", data.mean())
-    print("Variance:", data.var())
+    print("Variance:", data.var(ddof=1))
+    print("Standard Deviation:", data.std(ddof=1))
     print("Skewness:", data.skew())
     print("Kurtosis:", data.kurt())
 
