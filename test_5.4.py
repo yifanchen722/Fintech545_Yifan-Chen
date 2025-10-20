@@ -11,7 +11,7 @@ Y = test_lib.higham(data_path, maxiter, tol)
 print(Y)
 
 K = 100000
-L = np.linalg.cholesky(Y)
+L = test_lib.chol_psd(Y, epsilon=1e-8)
 M = np.random.normal(loc=0, scale=1, size=(Y.shape[0], K))
 
 V = (L @ M).T
