@@ -3,9 +3,7 @@ import pandas as pd
 from scipy.linalg import sqrtm
 import test_lib
 
-cov_matrix = np.loadtxt(
-    "/Users/nico/Desktop/input/test5_2.csv", delimiter=",", skiprows=1
-)
+cov_matrix = np.loadtxt("../data/test5_2.csv", delimiter=",", skiprows=1)
 
 
 eigenval, eigenvec = np.linalg.eig(cov_matrix)
@@ -33,7 +31,4 @@ M = np.random.normal(loc=0, scale=1, size=(L.shape[1], K))
 X = (L @ M).T
 sample_cov = np.cov(X, rowvar=False)
 
-np.set_printoptions(precision=15, suppress=True)
-
-output_path = "/Users/nico/Desktop/output_5.5.csv"
-pd.DataFrame(sample_cov).to_csv(output_path, index=False, header=False)
+print("Sample Covariance Matrix:\n", sample_cov)
