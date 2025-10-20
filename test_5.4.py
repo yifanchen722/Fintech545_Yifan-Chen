@@ -17,7 +17,4 @@ M = np.random.normal(loc=0, scale=1, size=(Y.shape[0], K))
 V = (L @ M).T
 sample_cov = np.cov(V, rowvar=False)
 
-np.set_printoptions(precision=15, suppress=True)
-
-output_path = "/Users/nico/Desktop/output_5.4.csv"
-pd.DataFrame(sample_cov).to_csv(output_path, index=False, header=False)
+print("Sample Covariance Matrix from Simulated Data:\n", sample_cov)
