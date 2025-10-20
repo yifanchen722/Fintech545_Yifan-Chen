@@ -252,3 +252,14 @@ def fit_normal_distribution(x):
     print(f"Variance: {var_n}")
     print(f"Skewness: {skew_n}")
     print(f"Kurtosis: {kurt_n}")
+
+
+# Cholesky decomposition with positive semi-definite adjustment
+def chol_psd(A, epsilon=1e-8):
+    A = (A + A.T) / 2
+    try:
+        L = np.linalg.cholesky(A)
+    except np.linalg.LinAlgError:
+        A_psd = get_near_psd(A, epsilon)
+        L = np.linalg.cholesky(A_psd)
+    return L
