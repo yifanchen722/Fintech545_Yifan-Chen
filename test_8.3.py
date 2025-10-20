@@ -30,8 +30,3 @@ for i in range(len(arr)):
 mean_diff = abs(mu - var95)
 print("VAR=", abs(var95))
 print("mean_diff=", mean_diff)
-
-output_path = "/Users/nico/Desktop/output_8.3.csv"
-pd.DataFrame({"VaR": [abs(var95)], "Diff from Mean": [mean_diff]}).to_csv(
-    output_path, index=False, header=True
-)
