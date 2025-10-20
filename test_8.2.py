@@ -11,8 +11,3 @@ mean_diff = abs(mu - var95)
 
 print("VaR:\n", abs(var95))
 print("Mean - VaR:\n", mean_diff)
-
-output_path = "/Users/nico/Desktop/output_8.2.csv"
-pd.DataFrame({"VaR": [abs(var95)], "Diff from Mean": [mean_diff]}).to_csv(
-    output_path, index=False, header=True
-)
