@@ -77,7 +77,7 @@ def get_ew_cov(data_path, lam, has_date, is_rate):
     if is_rate & has_date:
         # 如果已经是收益率数据，则不需要计算收益率，直接使用dt1
         # there is a date column, use iloc[:,1:] instead of iloc[:, :] to exclude the date column
-        dt2 = dt1.copy().iloc[:, 1:]
+        dt2 = dt1.copy().iloc[:, :-1]
         dt2.index = range(dt2.shape[0])
     elif is_rate & (not has_date):
         # 如果已经是收益率数据，则不需要计算收益率，直接使用dt1
@@ -87,9 +87,9 @@ def get_ew_cov(data_path, lam, has_date, is_rate):
     elif (not is_rate) & has_date:
         # 需要计算收益率
         # there is a date column, use iloc[1:,1:] instead of iloc[1, :] to exclude the date column
-        dt2 = dt1.copy().iloc[1:, 1:]
+        dt2 = dt1.copy().iloc[1:, :-1]
         dt2.index = range(dt2.shape[0])
-        dt2 = (dt2 - dt1.iloc[:-1, 1:]) / dt1.iloc[:-1, 1:]
+        dt2 = (dt2 - dt1.iloc[:-1, :-1]) / dt1.iloc[:-1, :-1]
     else:
         # 需要计算收益率
         # there is no date column, use iloc[1:, :] to include the date column
@@ -123,7 +123,7 @@ def get_ew_corr(data_path, lam, has_date, is_rate):
     if is_rate & has_date:
         # 如果已经是收益率数据，则不需要计算收益率，直接使用dt1
         # there is a date column, use iloc[:,1:] instead of iloc[:, :] to exclude the date column
-        dt2 = dt1.copy().iloc[:, 1:]
+        dt2 = dt1.copy().iloc[:, :-1]
         dt2.index = range(dt2.shape[0])
     elif is_rate & (not has_date):
         # 如果已经是收益率数据，则不需要计算收益率，直接使用dt1
@@ -133,9 +133,9 @@ def get_ew_corr(data_path, lam, has_date, is_rate):
     elif (not is_rate) & has_date:
         # 需要计算收益率
         # there is a date column, use iloc[1:,1:] instead of iloc[1, :] to exclude the date column
-        dt2 = dt1.copy().iloc[1:, 1:]
+        dt2 = dt1.copy().iloc[1:, :-1]
         dt2.index = range(dt2.shape[0])
-        dt2 = (dt2 - dt1.iloc[:-1, 1:]) / dt1.iloc[:-1, 1:]
+        dt2 = (dt2 - dt1.iloc[:-1, :-1]) / dt1.iloc[:-1, :-1]
     else:
         # 需要计算收益率
         # there is no date column, use iloc[1:, :] to include the date column
