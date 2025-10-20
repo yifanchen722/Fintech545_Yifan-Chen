@@ -10,8 +10,4 @@ M = np.random.normal(loc=0, scale=1, size=(Sigma.shape[0], K))
 
 X = (L @ M).T
 sample_cov = np.cov(X, rowvar=False)
-
-np.set_printoptions(precision=15, suppress=True)
-
-output_path = "../output/output_5.1.csv"
-pd.DataFrame(sample_cov).to_csv(output_path, index=False, header=False)
+print("Sample Covariance Matrix:\n", sample_cov)
