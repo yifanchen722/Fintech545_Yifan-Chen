@@ -3,7 +3,6 @@ import pandas as pd
 
 
 def american_option_binomial(S, K, T, r, q, sigma, steps, option_type, b=None):
-    # 与原函数几乎相同，唯一变化在 p 的计算
     if steps <= 0:
         raise ValueError("steps must be positive integer")
     dt = T / steps
@@ -27,7 +26,7 @@ def american_option_binomial(S, K, T, r, q, sigma, steps, option_type, b=None):
     else:
         option_values = np.maximum(K - ST, 0.0)
 
-    discount = np.exp(-r * dt)  # 注意折现仍然用 r（和 Julia 一致）
+    discount = np.exp(-r * dt)
     for i in range(steps - 1, -1, -1):
         ST_i = np.array([S * (u**j) * (d ** (i - j)) for j in range(i + 1)])
         cont = discount * (
@@ -82,15 +81,16 @@ def compute_greeks_with_b(S, K, T, r, q, sigma, steps, option_type):
     vega = (V_sigma_up - V_sigma_down) / (2.0 * eps_sigma)
 
     # Rho
-    eps_rho = 1e-4  # 或 1e-5 保证数值稳定
+    eps_rho = 1e-4
+
     V_r_up = american_option_binomial(
-        S, K, T, r + eps_rho, q, sigma, steps, option_type
+        S, K, T, r + eps_rho, q, sigma, steps, option_type, b=(r - q)
     )
     V_r_down = american_option_binomial(
-        S, K, T, max(r - eps_rho, 0), q, sigma, steps, option_type
+        S, K, T, max(r - eps_rho, 0), q, sigma, steps, option_type, b=(r - q)
     )
 
-    rho = -(V_r_up - V_r_down) / (2 * eps_rho) * 0.01
+    rho = (V_r_up - V_r_down) / (2 * eps_rho)
 
     # Theta
     if eps_t > 0:
