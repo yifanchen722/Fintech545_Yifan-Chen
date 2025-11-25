@@ -1,6 +1,6 @@
 import test_lib as tl
 
-data_path = "../data/testout_1.3.csv"
+data_path = "../data/problem5.csv"
 
 maxiter = 100000
 tol = 1e-10

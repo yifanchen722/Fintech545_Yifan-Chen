@@ -5,6 +5,7 @@ import statsmodels.api as sm
 file_path = "../data/test11_1_returns.csv"
 df = pd.read_csv(file_path)
 
+
 assets = ["x1", "x2", "x3"]
 
 w = np.zeros((df.shape[0], 3))

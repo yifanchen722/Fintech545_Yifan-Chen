@@ -1,7 +1,7 @@
 import test_lib as tl
 import numpy as np
 
-path = "../data/test2.csv"
+path = "../data/problem4.csv"
 
 lam1 = 0.97
 lam2 = 0.94

@@ -2,8 +2,8 @@ import pandas as pd
 import test_lib
 
 
-df = pd.read_csv("../data/test7_1.csv")
-x = df["x1"]
+df = pd.read_csv("../data/problem2.csv")
+x = df["X"]
 
 print("t_distribution")
 test_lib.fit_t_distribution(x)

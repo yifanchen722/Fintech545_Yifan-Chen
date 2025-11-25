@@ -2,14 +2,18 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 
-file_path = "../data/test5_2.csv"
-Sigma = pd.read_csv(file_path, header=0).values
-n = Sigma.shape[0]
+df_in = pd.read_csv("../final/problem3_insample.csv")
 
-mean = np.array([0.09, 0.08, 0.07, 0.06, 0.05])
-r_f = 0.04
+df_in = df_in.drop(columns=["Date"])
 
-mu_excess = mean - r_f
+assets = df_in.columns.tolist()
+n = len(assets)
+
+mean = df_in.mean().values
+rf = 0.04
+mu_excess = mean - rf
+
+Sigma = df_in.cov().values
 
 
 def neg_sharpe(w, mu_excess, Sigma):
@@ -21,12 +25,7 @@ def neg_sharpe(w, mu_excess, Sigma):
 constraints = {"type": "eq", "fun": lambda w: np.sum(w) - 1}
 
 eps = 1e-10
-# 对w进行限制，要求w在1e-10到1之间
-bounds = [(eps, 1.0) for _ in range(n)]
-
-# 如果要对w无限制，可写为
-# bounds = [(-1.0, 1.0) for _ in range(n)]
-
+bounds = [(-1.0, 1.0) for _ in range(n)]
 
 w0 = np.ones(n) / n
 
@@ -42,7 +41,6 @@ result = minimize(
 
 w_opt = result.x
 
-
 print("Max Sharpe Ratio Weights:")
-for wi in w_opt:
-    print(f"{wi:.12f}")
+for name, wi in zip(assets, w_opt):
+    print(f"{name}: {wi:.12f}")

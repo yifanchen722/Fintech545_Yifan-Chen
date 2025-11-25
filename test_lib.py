@@ -263,3 +263,53 @@ def chol_psd(A, epsilon=1e-8):
         A_psd = get_near_psd(A, epsilon)
         L = np.linalg.cholesky(A_psd)
     return L
+
+
+# Black-Scholes Option
+def bs_option_greeks(option_type, S, K, T, r, q, sigma, position="Long"):
+
+    # Calculate d1, d2
+    d1 = (np.log(S / K) + (r - q + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
+    d2 = d1 - sigma * np.sqrt(T)
+
+    value = 0.0
+    delta = 0.0
+    gamma = 0.0
+    vega = 0.0
+    rho = 0.0
+    theta = 0.0
+
+    # Calculate option price
+    if option_type == "Call":
+        value = S * np.exp(-q * T) * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
+        delta = np.exp(-q * T) * norm.cdf(d1)
+        rho = K * T * np.exp(-r * T) * norm.cdf(d2)
+    elif option_type == "Put":
+        value = K * np.exp(-r * T) * norm.cdf(-d2) - S * np.exp(-q * T) * norm.cdf(-d1)
+        delta = -np.exp(-q * T) * norm.cdf(-d1)
+        rho = -K * T * np.exp(-r * T) * norm.cdf(-d2)
+
+    # calculate Greeks
+    gamma = (np.exp(-q * T) * norm.pdf(d1)) / (S * sigma * np.sqrt(T))
+    vega = S * np.exp(-q * T) * norm.pdf(d1) * np.sqrt(T)
+    if option_type == "Call":
+        theta = (
+            -S * np.exp(-q * T) * norm.pdf(d1) * sigma / (2 * np.sqrt(T))
+            - r * K * np.exp(-r * T) * norm.cdf(d2)
+            + q * S * np.exp(-q * T) * norm.cdf(d1)
+        )
+    elif option_type == "Put":
+        theta = (
+            -S * np.exp(-q * T) * norm.pdf(d1) * sigma / (2 * np.sqrt(T))
+            + r * K * np.exp(-r * T) * norm.cdf(-d2)
+            - q * S * np.exp(-q * T) * norm.cdf(-d1)
+        )
+
+    if position == "Short":
+        value = -value
+        delta = -delta
+        vega = -vega
+        rho = -rho
+        theta = -theta
+
+    return value, delta, gamma, vega, rho, theta

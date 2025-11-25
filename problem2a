@@ -1,0 +1,14 @@
+import pandas as pd
+import test_lib as lib
+
+file_path = "../final/problem2.csv"
+col_name = "SPY"
+
+df = pd.read_csv(file_path)
+mu = df[col_name].mean()
+sigma = df[col_name].std(ddof=1)
+
+print("mu:", mu)
+print("sigma:", sigma)
+
+lib.summ_stats(df)

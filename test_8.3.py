@@ -12,6 +12,11 @@ samples = np.random.uniform(low=0, high=1, size=K)
 for i in range(K):
     samples[i] = t.ppf(samples[i], nu, loc=mu, scale=sigma)
 
+# alpha = 0.05  # 95% VaR
+
+# VaR = -np.percentile(samples, 100 * alpha)
+
+
 # empirical distribution
 unique_sorted = np.sort(np.unique(samples))
 arr = np.empty(len(unique_sorted))
