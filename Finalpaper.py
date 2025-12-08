@@ -336,6 +336,49 @@ def plot_return_distributions(portfolios: dict[str, pd.Series]):
     plt.show()
 
 
+def plot_ewma_normal_t(port_ret_ewma: pd.Series, alpha: float = 0.95):
+    r = port_ret_ewma.dropna()
+
+    # --- Normal 拟合参数 ---
+    mu_norm = r.mean()
+    sigma_norm = r.std()
+
+    # --- t 分布拟合参数 ---
+    df_t, loc_t, scale_t = t.fit(r)
+
+    # x 轴取一个稍微宽一点的范围，方便看尾部
+    x = np.linspace(r.min() * 1.2, r.max() * 1.2, 1000)
+
+    plt.figure(figsize=(8, 5))
+    # 实证直方图
+    sns.histplot(
+        r,
+        bins=60,
+        stat="density",
+        color="lightgray",
+        alpha=0.6,
+        label="Empirical histogram",
+    )
+
+    # Normal 拟合曲线
+    plt.plot(x, norm.pdf(x, mu_norm, sigma_norm), label="Normal fit", linewidth=2)
+
+    # t 拟合曲线
+    plt.plot(
+        x, t.pdf(x, df_t, loc=loc_t, scale=scale_t), label="Student-t fit", linewidth=2
+    )
+
+    plt.title("EWMA Portfolio: Normal vs Student-t Fit")
+    plt.xlabel("Daily return")
+    plt.ylabel("Density")
+    plt.legend()
+    plt.tight_layout()
+
+    # 保存一份给 LaTeX 用
+    plt.savefig("ewma_normal_t_fit.png", dpi=300)
+    plt.show()
+
+
 # ============================================================
 # 8. Main Pipeline
 # ============================================================
@@ -486,7 +529,24 @@ def main():
     }
     plot_weight_comparison(weights_dict)
 
+    portfolios = {
+        "Historical Mean": port_ret_hist,
+        "CAPM": port_ret_capm,
+        "EWMA": port_ret_ewma,
+    }
+    plot_cumulative_returns(portfolios)
+
+    weights_dict = {
+        "Historical Mean": weights_hist,
+        "CAPM": weights_capm,
+        "EWMA": weights_ewma,
+    }
+    plot_weight_comparison(weights_dict)
+
     plot_return_distributions(portfolios)
+
+    # 新增：EWMA 组合 Normal vs t 拟合图
+    plot_ewma_normal_t(port_ret_ewma, alpha=BOOTSTRAP_ALPHA)
 
 
 if __name__ == "__main__":
